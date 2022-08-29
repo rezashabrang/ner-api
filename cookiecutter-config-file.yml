@@ -1,0 +1,13 @@
+# This file contains values from Cookiecutter
+
+default_context:
+  project_name: "ner_api"
+  project_description: "Wrapper API for HooshvareLab/roberta-fa-zwnj-base-ner"
+  organization: "aasaam"
+  license: "MIT"
+  minimal_python_version: 3.8
+  github_name: "rezashabrang"
+  email: "rezashabrang.m@gmail.com"
+  version: "0.1.0"
+  line_length: "88"
+  create_example_template: "none"
