@@ -35,6 +35,7 @@ python = ">=3.8,<3.11"
 tensorflow-gpu = {path = "tensorflow_gpu-2.9.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"}
 fastapi = "^0.81.0"
 transformers = "^4.21.2"
+uvicorn = "^0.18.3"
 
 [tool.poetry.dev-dependencies]
 bandit = "^1.7.1"

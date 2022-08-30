@@ -160,7 +160,7 @@ unicode_backport = ["unicodedata2"]
 name = "click"
 version = "8.1.3"
 description = "Composable command line interface toolkit"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 
@@ -378,6 +378,14 @@ six = ">=1.5.2"
 
 [package.extras]
 protobuf = ["grpcio-tools (>=1.48.0)"]
+
+[[package]]
+name = "h11"
+version = "0.13.0"
+description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
+category = "main"
+optional = false
+python-versions = ">=3.6"
 
 [[package]]
 name = "h5py"
@@ -1319,6 +1327,21 @@ secure = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "cer
 socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [[package]]
+name = "uvicorn"
+version = "0.18.3"
+description = "The lightning-fast ASGI server."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+click = ">=7.0"
+h11 = ">=0.8"
+
+[package.extras]
+standard = ["colorama (>=0.4)", "httptools (>=0.4.0)", "python-dotenv (>=0.13)", "pyyaml (>=5.1)", "uvloop (>=0.14.0,!=0.15.0,!=0.15.1)", "watchfiles (>=0.13)", "websockets (>=10.0)"]
+
+[[package]]
 name = "virtualenv"
 version = "20.16.3"
 description = "Virtual Python Environment builder"
@@ -1372,7 +1395,7 @@ docs = ["jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "jaraco.packaging (>=9)
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8,<3.11"
-content-hash = "05136a35b7b7fe1ddc4c9d191f79edba7c938d95ce79af9a87e964a7bb60bc54"
+content-hash = "9d6d1dfdbcaeb5779adc9c92f53b880b7e7204f33a62de39f9fe7275bb12b9ba"
 
 [metadata.files]
 absl-py = []
@@ -1485,6 +1508,10 @@ google-pasta = [
     {file = "google_pasta-0.2.0-py3-none-any.whl", hash = "sha256:b32482794a366b5366a32c92a9a9201b107821889935a02b3e51f6b432ea84ed"},
 ]
 grpcio = []
+h11 = [
+    {file = "h11-0.13.0-py3-none-any.whl", hash = "sha256:8ddd78563b633ca55346c8cd41ec0af27d3c79931828beffb46ce70a379e7442"},
+    {file = "h11-0.13.0.tar.gz", hash = "sha256:70813c1135087a248a4d38cc0e1a0181ffab2188141a93eaf567940c3957ff06"},
+]
 h5py = [
     {file = "h5py-3.7.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:d77af42cb751ad6cc44f11bae73075a07429a5cf2094dfde2b1e716e059b3911"},
     {file = "h5py-3.7.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:63beb8b7b47d0896c50de6efb9a1eaa81dbe211f3767e7dd7db159cea51ba37a"},
@@ -1956,6 +1983,7 @@ typing-extensions = [
     {file = "typing_extensions-4.3.0.tar.gz", hash = "sha256:e6d2677a32f47fc7eb2795db1dd15c1f34eff616bcaf2cfb5e997f854fa1c4a6"},
 ]
 urllib3 = []
+uvicorn = []
 virtualenv = []
 werkzeug = []
 wrapt = [
