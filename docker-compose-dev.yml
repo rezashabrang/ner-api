@@ -1,0 +1,22 @@
+version: "3.7"
+
+services:
+    ner-api:
+        build:
+            dockerfile: Dockerfile
+            context: .
+        image: ner-api
+        container_name: ner-api
+        environment:
+            LOG_LEVEL: ${LOG_LEVEL}
+            MODEL_PATH: ${MODEL_PATH}
+        networks:
+            - ner-net
+        volumes:
+            - .:/app/
+        ports:
+            - "8084:80"
+
+networks:
+    ner-net:
+        name: ner-net

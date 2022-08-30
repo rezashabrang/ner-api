@@ -620,3 +620,4 @@ MigrationBackup/
 .env
 sandbox/
 *.whl
+roberta-fa-zwnj-base-ner
