@@ -135,7 +135,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -621,3 +620,4 @@ MigrationBackup/
 sandbox/
 *.whl
 roberta-fa-zwnj-base-ner
+experiments

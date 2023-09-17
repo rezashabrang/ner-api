@@ -1,91 +1,39 @@
 """Document processor Endpoint."""
-import re
-from typing import Dict, Optional
-
-from numpy import float32
-
-from fastapi import APIRouter, HTTPException, Query
+from typing import Dict
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import os
+
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
 os.environ["TRANSFORMERS_VERBOSITY"] = "error"
-from transformers import AutoTokenizer, TFAutoModelForTokenClassification, TokenClassificationPipeline
-from pathlib import Path
+from transformers import (
+    AutoTokenizer,
+    TFAutoModelForTokenClassification,
+    TokenClassificationPipeline,
+)
 
-
-def convert_types(result: list):
-    res = []
-    for item in result:
-        temp_res = {}
-        for _, (key, value) in enumerate(item.items()):
-            if type(value) == float32:
-                value = float(value)
-            temp_res[key] = value
-
-        res.append([temp_res])
-    return res
-
-def concat_named_entities(model_res, text):
-    """
-    Concating named Entities found from model
-    """
-    res = []
-    entity = ""
-    score = []
-    start = 0
-    end = 0
-    for item in model_res:
-        if item["entity"].startswith("B"):
-            # If there are records stored resolve them
-            if entity != "":      
-                res.append(
-                    {
-                        "entity": entity,
-                        "score": sum(score) / len(score),
-                        "start": start,
-                        "end": end,
-                        "word": text[start:end]
-                    }
-                )
-            # Adding the beginning of new enrtity
-            entity = list(item["entity"].split("-"))[1]
-            score.append(item["score"])
-            start = item["start"]
-            end = item["end"]
-        elif item["entity"].startswith("I"):
-            score.append(item["score"])
-            end = item["end"]
-    if entity != "":  # If there are still record at then end of iteration resolve them
-        res.append(
-                    {
-                        "entity": entity,
-                        "score": sum(score) / len(score),
-                        "start": start,
-                        "end": end,
-                        "word": text[start:end]
-                    }
-                )
-    return res
-
-
-
-
-
+from ..logger import LOGGER
+from ..lib.utils import (
+    align_predicted_annotations,
+    chunk_text_for_prediction,
+    concat_named_entities,
+)
 
 # ------------------------------ Initialization -------------------------------
 router = APIRouter()
 
 model_path = os.environ["MODEL_PATH"]
 
-tokenizer = AutoTokenizer.from_pretrained(model_path)
+TOKENIZER = AutoTokenizer.from_pretrained(model_path)
 
-model = TFAutoModelForTokenClassification.from_pretrained(model_path)
+MODEL = TFAutoModelForTokenClassification.from_pretrained(model_path)
 
 # ---------------------------- function definition ----------------------------
 
 
 class TextData(BaseModel):
     """Schema for comments"""
+
     text: str
 
 
@@ -98,13 +46,30 @@ class TextData(BaseModel):
 async def extract_named_entities(
     doc: TextData,
 ) -> Dict[str, str]:
-    """
-    """
+    """Extract named entities from text."""
     try:
-        pipe = TokenClassificationPipeline(model=model, tokenizer=tokenizer)
-        res = pipe([doc.text])
-        res = concat_named_entities(res[0], doc.text)
-        return {"namedEntities":res}
+        # Defining pipeline
+        ner_pipeline = TokenClassificationPipeline(
+            model=MODEL,
+            tokenizer=TOKENIZER,
+        )
+
+        LOGGER.debug("Chunking text for prediction.")
+        # Passing the ner task to pipeline
+        ner_results = []
+        chunks = chunk_text_for_prediction(doc.text)
+        unaligned_preds = []
+        for chunk in chunks:
+            res = ner_pipeline(chunk)
+            unaligned_preds.append(res)
+        ner_results.append(align_predicted_annotations(unaligned_preds, chunks))
+
+        LOGGER.debug("Received predictions from model.")
+        print(doc.text)
+
+        # Curating named entities
+        curated_ners = concat_named_entities(model_results=ner_results, texts=[doc.text])
+        return {"namedEntities": curated_ners}
     except HTTPException as err:
         raise HTTPException(status_code=400) from err
 

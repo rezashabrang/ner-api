@@ -27,4 +27,5 @@ RUN poetry install -n --no-dev && rm -f ./tensorflow_gpu-2.9.1-cp38-cp38-manylin
 COPY . /app
 
 # Final
-CMD uvicorn ner_api.main:app --host 0.0.0.0 --port 80 --log-level ${LOG_LEVEL}
+# --workers 6
+CMD uvicorn ner_api.main:app --host 0.0.0.0 --port 80 --log-level ${LOG_LEVEL}  
