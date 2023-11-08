@@ -71,7 +71,7 @@ async def extract_named_entities(
         curated_ners = concat_named_entities(
             model_results=ner_results, texts=[doc.text]
         )
-        LOGGER.debug(f"Found {len(curated_ners)} entities.")
+        LOGGER.debug(f"Found {len(curated_ners[0])} entities.")
         return {"namedEntities": curated_ners}
     except HTTPException as err:
         raise HTTPException(status_code=400) from err
