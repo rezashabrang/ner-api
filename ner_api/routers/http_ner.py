@@ -28,6 +28,13 @@ TOKENIZER = AutoTokenizer.from_pretrained(model_path)
 
 MODEL = TFAutoModelForTokenClassification.from_pretrained(model_path)
 
+# Defining pipeline
+NER_PIPELINE = TokenClassificationPipeline(
+    model=MODEL,
+    tokenizer=TOKENIZER,
+)
+
+
 # ---------------------------- function definition ----------------------------
 
 
@@ -48,27 +55,23 @@ async def extract_named_entities(
 ) -> Dict[str, str]:
     """Extract named entities from text."""
     try:
-        # Defining pipeline
-        ner_pipeline = TokenClassificationPipeline(
-            model=MODEL,
-            tokenizer=TOKENIZER,
-        )
-
         LOGGER.debug("Chunking text for prediction.")
         # Passing the ner task to pipeline
         ner_results = []
         chunks = chunk_text_for_prediction(doc.text)
         unaligned_preds = []
         for chunk in chunks:
-            res = ner_pipeline(chunk)
+            res = NER_PIPELINE(chunk)
             unaligned_preds.append(res)
         ner_results.append(align_predicted_annotations(unaligned_preds, chunks))
 
         LOGGER.debug("Received predictions from model.")
-        print(doc.text)
 
         # Curating named entities
-        curated_ners = concat_named_entities(model_results=ner_results, texts=[doc.text])
+        curated_ners = concat_named_entities(
+            model_results=ner_results, texts=[doc.text]
+        )
+        LOGGER.debug(f"Found {len(curated_ners)} entities.")
         return {"namedEntities": curated_ners}
     except HTTPException as err:
         raise HTTPException(status_code=400) from err

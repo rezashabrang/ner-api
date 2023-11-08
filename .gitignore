@@ -621,3 +621,4 @@ sandbox/
 *.whl
 roberta-fa-zwnj-base-ner
 experiments
+albert-fa-zwnj-base-v2-ner

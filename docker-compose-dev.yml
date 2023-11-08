@@ -18,7 +18,9 @@ services:
             - .:/app/
         ports:
             - "8084:80"
-        command: uvicorn ner_api.main:app --host 0.0.0.0 --port 80 --log-level ${LOG_LEVEL} --reload
+        command: uvicorn ner_api.main:app --host 0.0.0.0 --port 80 --log-level ${LOG_LEVEL} --workers 10
+        # command: gunicorn -w 20 -b 0.0.0.0:80 ner_api.main:app
+
 
 
 networks:

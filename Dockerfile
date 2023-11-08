@@ -22,7 +22,7 @@ RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python
 
 COPY tensorflow_gpu-2.9.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl pyproject.toml poetry.lock /app/
 
-RUN poetry install -n --no-dev && rm -f ./tensorflow_gpu-2.9.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+RUN poetry install -n --only main && rm -f ./tensorflow_gpu-2.9.1-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
 
 COPY . /app
 
